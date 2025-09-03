@@ -6,20 +6,7 @@ const generateQRCode = (text: string): string => {
   return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedText}`;
 };
 
-// Create header
-const header = document.createElement("div");
-header.className = "app-header";
-document.body.appendChild(header);
 
-const title = document.createElement("h1");
-title.textContent = "QR Code Generator";
-title.className = "app-title";
-header.appendChild(title);
-
-const subtitle = document.createElement("p");
-subtitle.textContent = "Generate QR codes for various types of content";
-subtitle.className = "app-subtitle";
-header.appendChild(subtitle);
 // Create main container
 const outerDiv = document.createElement("div");
 document.body.appendChild(outerDiv);
@@ -71,7 +58,6 @@ previewCol.appendChild(qrDisplay);
 
 const qrImage = document.createElement("img");
 qrImage.className = "qr-code";
-qrImage.alt = "QR Code will appear here";
 qrDisplay.appendChild(qrImage);
 
 const qrText = document.createElement("p");
