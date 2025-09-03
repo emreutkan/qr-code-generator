@@ -58,31 +58,76 @@ body::before {
   z-index: -1;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
 .container {
-  width: min(1200px, 92vw);
+  width: min(1400px, 92vw);
   background: var(--card-bg);
   border-radius: 22px;
   z-index: 1;
   box-shadow: var(--shadow-lg);
 }
 
+.ecc-toolbar {
+  align-self: flex-end;
+  margin-right: 6px;
+  display: flex;
+  gap: 8px;
+}
+
+.ecc-btn {
+  height: 36px;
+  min-width: 36px;
+  border-radius: 100%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-weight: 700;
+  position: relative;
+}
+
+.ecc-btn.active {
+  background: var(--primary);
+  color: var(--surface);
+  border-color: var(--primary);
+}
+
+.ecc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .content {
   display: grid;
-  grid-template-columns: 200px 1fr 1fr;
-  gap: 0;
+  grid-template-columns: 20% 40% 40%;
+  /* display: flex; */
+  /* flex-direction: row; */
   background: transparent;
   transition: grid-template-columns 0.3s ease;
 }
 
 .content.sidebar-collapsed {
-  grid-template-columns: 48px 1fr 1fr;
+  grid-template-columns: 4% 48% 48%;
 }
 
 /* Columns */
 .sidebar,
 .center,
 .preview {
-  padding: 30px;
+  padding: 1vw;
 }
 
 .sidebar {
@@ -91,16 +136,16 @@ body::before {
   gap: 16px;
   border-right: 2px solid var(--border);
   transition: all 0.3s ease;
-  min-width: 200px;
-  height: min(525px, 92vh);
+  /* height: min(525px, 92vh); */
   /* add box shadow to the right */
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  max-height: 78vh; /* adjustable viewport-based height for scrolling */
 }
 
 .sidebar.collapsed {
-  padding: 6px;
-  min-width: 48px;
-  width: 48px;
+  padding: 1vw;
+  width: 3vw;
   overflow: visible;
 }
 
@@ -112,18 +157,10 @@ body::before {
   display: none;
 }
 
-.sidebar.collapsed .sidebar-collapse {
-  margin: 0 auto;
-}
-
 .sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--primary);
-  margin-bottom: 8px;
 }
 
 .sidebar-collapse {
@@ -131,12 +168,11 @@ body::before {
   color: var(--surface);
   border: none;
   border-radius: var(--radius-btn);
-  width: 30px;
-  height: 30px;
+  width: 2vw;
+  height: 2vw;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  transition: all 0.3s ease;
 }
 
 .sidebar-collapse:hover {
@@ -145,8 +181,8 @@ body::before {
 }
 
 .center {
+  width: 100%;
   border-right: 2px solid var(--border);
-  /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); */
 }
 
 .preview {
@@ -174,6 +210,37 @@ body::before {
   text-align: left;
   padding: 0 16px;
   color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-toggle .btn-ic {
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-toggle .btn-ic svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Validation states */
+.field-group.invalid input,
+.field-group.invalid select,
+.link-input-container.invalid input,
+.link-input-container.invalid select {
+  border-color: #e53935;
+  box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.15);
+}
+
+.field-error {
+  color: #e53935;
+  font-size: 12px;
+  margin-top: -2px;
 }
 
 .input-toggle:hover {
@@ -311,6 +378,24 @@ body::before {
   font-weight: 500;
 }
 
+.qr-meta {
+  width: 100%;
+  max-width: 360px;
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px dashed var(--border);
+  padding-top: 12px;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 6px 12px;
+  text-align: left;
+}
+
+.qr-meta .label {
+  font-weight: 600;
+  color: var(--primary);
+}
+
 /* Responsive adjustments */
 @media (max-width: 860px) {
   .content {
@@ -344,13 +429,13 @@ body::before {
 
 /* Watermark */
 .watermark {
-  position: fixed;
-  left: 5vw;
-  bottom: 5vw;
+  padding-left: 6px;
   color: rgba(255, 255, 255, 0.8);
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
@@ -365,7 +450,7 @@ body::before {
 .watermark h2 {
   line-height: 0;
   font-size: 1vw;
-  margin: 0;
-  padding: 0;
+  margin-top: 0;
+  padding-top: 0;
   font-weight: 400;
 }
