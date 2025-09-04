@@ -480,15 +480,6 @@ const isValidPhone = (value: string) =>
   /^[+]?\d[\d\s-]{5,}$/.test(value.replace(/\(|\)/g, ""));
 const isValidLat = (n: number) => Number.isFinite(n) && n >= -90 && n <= 90;
 const isValidLon = (n: number) => Number.isFinite(n) && n >= -180 && n <= 180;
-const isValidYouTubeId = (v: string) => /^[a-zA-Z0-9_-]{11}$/.test(v);
-const isValidSpotifyId = (v: string) => /^[a-zA-Z0-9]{22}$/.test(v);
-
-// Function to show QR code and download button
-const showQRCode = (qrUrl: string, description: string) => {
-  qrImage.src = qrUrl;
-  qrText.textContent = description;
-  downloadBtn.style.display = "inline-block";
-};
 
 const showQRCodeWithECC = async (text: string, description: string) => {
   lastPayloadText = text;
