@@ -410,6 +410,20 @@ body::before {
   color: var(--primary);
 }
 
+/* Prevent long values from overflowing; allow horizontal scroll specifically for URL */
+.qr-meta .value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qr-meta .preview-url {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
 /* QR controls */
 .qr-toolbar {
   width: 100%;

@@ -504,7 +504,12 @@ const showQRCodeWithECC = async (text: string, description: string) => {
     kEl.className = "label";
     kEl.textContent = k;
     const vEl = document.createElement("div");
+    vEl.className = "value";
     vEl.textContent = v;
+    if (k === "Preview URL") {
+      vEl.classList.add("preview-url");
+      vEl.title = v;
+    }
     qrMeta.appendChild(kEl);
     qrMeta.appendChild(vEl);
   }
