@@ -102,6 +102,61 @@ const qrMeta = document.createElement("div");
 qrMeta.className = "qr-meta";
 qrDisplay.appendChild(qrMeta);
 
+// QR style toolbar on top of preview
+const qrToolbar = document.createElement("div");
+qrToolbar.className = "qr-toolbar";
+qrDisplay.parentElement?.insertBefore(qrToolbar, qrDisplay);
+
+// Color controls (FG/BG with labels) + actions (Invert/Reset)
+const fgGroup = document.createElement("div");
+fgGroup.className = "color-group";
+const fgLabel = document.createElement("span");
+fgLabel.className = "color-label";
+fgLabel.textContent = "FG";
+const fgColorInput = document.createElement("input");
+fgColorInput.type = "color";
+fgColorInput.value = "#000000";
+fgGroup.appendChild(fgLabel);
+fgGroup.appendChild(fgColorInput);
+qrToolbar.appendChild(fgGroup);
+
+const bgGroup = document.createElement("div");
+bgGroup.className = "color-group";
+const bgLabel = document.createElement("span");
+bgLabel.className = "color-label";
+bgLabel.textContent = "BG";
+const bgColorInput = document.createElement("input");
+bgColorInput.type = "color";
+bgColorInput.value = "#ffffff";
+bgGroup.appendChild(bgLabel);
+bgGroup.appendChild(bgColorInput);
+qrToolbar.appendChild(bgGroup);
+
+const invertBtn = document.createElement("button");
+invertBtn.className = "qr-action-btn";
+invertBtn.type = "button";
+invertBtn.textContent = "Invert";
+qrToolbar.appendChild(invertBtn);
+
+const resetBtn = document.createElement("button");
+resetBtn.className = "qr-action-btn";
+resetBtn.type = "button";
+resetBtn.textContent = "Reset";
+qrToolbar.appendChild(resetBtn);
+
+invertBtn.addEventListener("click", () => {
+  const tmp = fgColorInput.value;
+  fgColorInput.value = bgColorInput.value;
+  bgColorInput.value = tmp;
+  if (lastPayloadText) showQRCodeWithECC(lastPayloadText, lastDescription);
+});
+
+resetBtn.addEventListener("click", () => {
+  fgColorInput.value = "#000000";
+  bgColorInput.value = "#ffffff";
+  if (lastPayloadText) showQRCodeWithECC(lastPayloadText, lastDescription);
+});
+
 // ECC toolbar buttons
 type ECCLevel = "L" | "M" | "Q" | "H";
 const eccLevels: ECCLevel[] = ["L", "M", "Q", "H"];
@@ -241,23 +296,84 @@ directionsInput.className = "input-toggle";
 directionsInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M21.71 11.29l-9-9a1 1 0 00-1.42 0l-9 9a1 1 0 000 1.42l9 9a1 1 0 001.42 0l9-9a1 1 0 000-1.42zM12 20l-8-8 8-8 8 8-8 8z\"/></svg></span><span>Directions</span>`;
 inputSwitcher.appendChild(directionsInput);
 
+// New buttons
+const appstoreInput = document.createElement("button");
+appstoreInput.className = "input-toggle";
+appstoreInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z\"/></svg></span><span>App Store</span>`;
+inputSwitcher.appendChild(appstoreInput);
+
+const playstoreInput = document.createElement("button");
+playstoreInput.className = "input-toggle";
+playstoreInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M3 20.5V3.5c0-.83.92-1.34 1.6-.9l13.1 8.5c.67.43.67 1.36 0 1.79l-13.1 8.5c-.68.44-1.6-.07-1.6-.9z\"/></svg></span><span>Play Store</span>`;
+inputSwitcher.appendChild(playstoreInput);
+
+const appleMapsInput = document.createElement("button");
+appleMapsInput.className = "input-toggle";
+appleMapsInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l4 7-7-4-4 7 7-4 4 7\"/></svg></span><span>Apple Maps</span>`;
+inputSwitcher.appendChild(appleMapsInput);
+
+const wazeInput = document.createElement("button");
+wazeInput.className = "input-toggle";
+wazeInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg></span><span>Waze</span>`;
+inputSwitcher.appendChild(wazeInput);
+
+const githubInput = document.createElement("button");
+githubInput.className = "input-toggle";
+githubInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.38 7.86 10.9.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.53-1.35-1.3-1.71-1.3-1.71-1.07-.73.08-.72.08-.72 1.19.08 1.82 1.23 1.82 1.23 1.05 1.8 2.75 1.28 3.42.98.11-.77.41-1.28.74-1.57-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.3 1.2-3.11-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.19a11.04 11.04 0 0 1 5.79 0c2.2-1.5 3.17-1.19 3.17-1.19.64 1.59.24 2.77.12 3.06.75.81 1.2 1.85 1.2 3.11 0 4.43-2.69 5.41-5.25 5.69.42.36.79 1.08.79 2.18v3.23c0 .31.21.67.79.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z\"/></svg></span><span>GitHub</span>`;
+inputSwitcher.appendChild(githubInput);
+
+const linkedinInput = document.createElement("button");
+linkedinInput.className = "input-toggle";
+linkedinInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M4 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM3 8h2v13H3zM9 8h2v2h.03A2.2 2.2 0 0 1 13 8c2.2 0 3 1.47 3 3.38V21h-2v-6.5c0-1.55-.03-3.55-2.17-3.55-2.17 0-2.5 1.69-2.5 3.43V21H7V8h2z\"/></svg></span><span>LinkedIn</span>`;
+inputSwitcher.appendChild(linkedinInput);
+
+const discordInput = document.createElement("button");
+discordInput.className = "input-toggle";
+discordInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M20 4a16 16 0 0 0-4-.5l-.2.4a13 13 0 0 1 3.2 1.1A11 11 0 0 0 16 4c-3 0-4.9 1.6-4.9 1.6S9.2 4 6 4C4.6 4 3.4 4.3 2.4 4.6A11 11 0 0 1 5.6 3.9L5.4 3.5A16 16 0 0 0 2 4.5C.2 7.1 0 10 0 10s2.1 3.7 7.1 3.9l-.9-1.4c1.8 1.4 3.8 1.4 3.8 1.4s2 0 3.8-1.4l-.9 1.4C21.9 13.7 24 10 24 10s-.2-2.9-2-5.5z\"/></svg></span><span>Discord</span>`;
+inputSwitcher.appendChild(discordInput);
+
+const slackInput = document.createElement("button");
+slackInput.className = "input-toggle";
+slackInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M5 15a2 2 0 1 1 0-4h2v4H5zm2-6H5a2 2 0 1 1 0-4h2v4zm2 10a2 2 0 1 1 4 0v2h-4v-2zm6 2v-2a2 2 0 1 1 4 0v2h-4zM9 7h4v4H9V7zm6 0h4v4h-4V7zM9 13h4v4H9v-4zm6 0h4v4h-4v-4z\"/></svg></span><span>Slack</span>`;
+inputSwitcher.appendChild(slackInput);
+
+const googleReviewsInput = document.createElement("button");
+googleReviewsInput.className = "input-toggle";
+googleReviewsInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 15.77 7.06 17.4 8 11.9 4 8l5.61-1.16L12 2z\"/></svg></span><span>Google Reviews</span>`;
+inputSwitcher.appendChild(googleReviewsInput);
+
+const utmBuilderInput = document.createElement("button");
+utmBuilderInput.className = "input-toggle";
+utmBuilderInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M3 3h18v2H3V3zm0 6h18v2H3V9zm0 6h18v2H3v-2z\"/></svg></span><span>UTM Builder</span>`;
+inputSwitcher.appendChild(utmBuilderInput);
+
 // Reorder buttons alphabetically by label
 const orderedButtons: HTMLButtonElement[] = [
+  appstoreInput,
+  appleMapsInput,
   directionsInput,
+  discordInput,
   emailInput,
   eventInput,
   facetimeInput,
+  githubInput,
+  googleReviewsInput,
   imessageInput,
+  linkedinInput,
   mecardInput,
   messengerInput,
   phoneInput,
+  playstoreInput,
   smsInput,
+  slackInput,
   socialInput,
   spotifyInput,
   telegramInput,
   textInput,
+  utmBuilderInput,
   uberInput,
   urlInput,
+  wazeInput,
   whatsappInput,
   wifiInput,
   youtubeInput,
@@ -274,6 +390,16 @@ inputToggles.forEach((button) => {
     button.classList.add("active");
   });
 });
+
+// Live color updates
+const attachLiveColorHandlers = () => {
+  const update = () => {
+    if (!lastPayloadText) return;
+    showQRCodeWithECC(lastPayloadText, lastDescription);
+  };
+  fgColorInput.addEventListener("input", update);
+  bgColorInput.addEventListener("input", update);
+};
 
 // Helpers
 const clearAndStack = (stack: boolean) => {
@@ -379,6 +505,8 @@ const showQRCodeWithECC = async (text: string, description: string) => {
     ["ECC", ecc],
     ["Payload", `${sizeBytes} bytes`],
     ["Preview URL", url],
+    ["FG", fgColorInput.value],
+    ["BG", bgColorInput.value],
   ];
   for (const [k, v] of rows) {
     const kEl = document.createElement("div");
@@ -389,6 +517,8 @@ const showQRCodeWithECC = async (text: string, description: string) => {
     qrMeta.appendChild(kEl);
     qrMeta.appendChild(vEl);
   }
+  qrImage.style.background = "var(--surface)";
+  qrImage.style.padding = "20px";
 };
 
 // Utilities specific to certain types
@@ -431,7 +561,9 @@ const chooseBestECC = async (text: string): Promise<ECCLevel> => {
 
 const buildQRUrl = (text: string, ecc: ECCLevel): string => {
   const encodedText = encodeURIComponent(text);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=${ecc}&data=${encodedText}`;
+  const fg = fgColorInput.value.replace("#", "");
+  const bg = bgColorInput.value.replace("#", "");
+  return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=${ecc}&color=${fg}&bgcolor=${bg}&data=${encodedText}`;
 };
 const toIcsDateTimeLocal = (value: string): string => {
   // value expected like "YYYY-MM-DDTHH:MM" or "YYYY-MM-DDTHH:MM:SS"
@@ -670,15 +802,29 @@ const renderEmail = () => {
     type: "text",
     placeholder: "Message",
   });
+  const cc = createField("CC (comma-separated)", {
+    kind: "input",
+    type: "text",
+    placeholder: "cc1@example.com, cc2@example.com",
+  });
+  const bcc = createField("BCC (comma-separated)", {
+    kind: "input",
+    type: "text",
+    placeholder: "bcc1@example.com, bcc2@example.com",
+  });
   inputContainer.appendChild(to);
   inputContainer.appendChild(subject);
   inputContainer.appendChild(body);
+  inputContainer.appendChild(cc);
+  inputContainer.appendChild(bcc);
 
   const confirmBtn = createConfirmButton();
   confirmBtn.addEventListener("click", () => {
     const recipient = getInputEl(to).value.trim();
     const subj = getInputEl(subject).value.trim();
     const msg = getInputEl(body).value.trim();
+    const ccValue = getInputEl(cc).value.trim();
+    const bccValue = getInputEl(bcc).value.trim();
     clearFieldError(to);
     if (!isValidEmail(recipient)) {
       showFieldError(to, "Enter a valid email");
@@ -688,6 +834,8 @@ const renderEmail = () => {
     const params = [] as string[];
     if (subj) params.push(`subject=${encodeURIComponent(subj)}`);
     if (msg) params.push(`body=${encodeURIComponent(msg)}`);
+    if (ccValue) params.push(`cc=${encodeURIComponent(ccValue)}`);
+    if (bccValue) params.push(`bcc=${encodeURIComponent(bccValue)}`);
     if (params.length > 0) emailString += `?${params.join("&")}`;
     showQRCodeWithECC(emailString, `QR Code for email to: ${recipient}`);
   });
@@ -706,6 +854,11 @@ const renderVCard = () => {
     type: "text",
     placeholder: "Company",
   });
+  const title = createField("Title (optional)", {
+    kind: "input",
+    type: "text",
+    placeholder: "e.g., Product Manager",
+  });
   const phone = createField("Phone", {
     kind: "input",
     type: "tel",
@@ -716,10 +869,17 @@ const renderVCard = () => {
     type: "email",
     placeholder: "name@example.com",
   });
+  const website = createField("Website (optional)", {
+    kind: "input",
+    type: "text",
+    placeholder: "https://example.com",
+  });
   inputContainer.appendChild(name);
   inputContainer.appendChild(org);
+  inputContainer.appendChild(title);
   inputContainer.appendChild(phone);
   inputContainer.appendChild(email);
+  inputContainer.appendChild(website);
 
   const confirmBtn = createConfirmButton();
   confirmBtn.addEventListener("click", () => {
@@ -731,6 +891,8 @@ const renderVCard = () => {
     ).value.trim();
     const phoneNumber = getInputEl(phone).value.trim();
     const emailAddress = getInputEl(email).value.trim();
+    const jobTitle = getInputEl(title).value.trim();
+    const web = getInputEl(website).value.trim();
     clearFieldError(name);
     clearFieldError(phone);
     clearFieldError(email);
@@ -747,8 +909,10 @@ const renderVCard = () => {
       let vcard = "BEGIN:VCARD\nVERSION:3.0\n";
       vcard += `FN:${fullName}\n`;
       if (organization) vcard += `ORG:${organization}\n`;
+      if (jobTitle) vcard += `TITLE:${jobTitle}\n`;
       if (phoneNumber) vcard += `TEL:${phoneNumber}\n`;
       if (emailAddress) vcard += `EMAIL:${emailAddress}\n`;
+      if (web) vcard += `URL:${web}\n`;
       vcard += "END:VCARD";
 
       showQRCodeWithECC(vcard, `QR Code for vCard: ${fullName}`);
@@ -1128,6 +1292,258 @@ const renderYouTube = () => {
 
 // Payments renderer removed
 
+// New renderers
+const renderLinkedIn = () => {
+  clearAndStack(true);
+  const username = createField("Profile or Company", {
+    kind: "input",
+    type: "text",
+    placeholder: "e.g., in/emre-utkan or company/company-name",
+  });
+  inputContainer.appendChild(username);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const u = (
+      username.querySelector("input") as HTMLInputElement
+    ).value.trim();
+    if (u) {
+      const url = /^https?:\/\//i.test(u)
+        ? u
+        : `https://www.linkedin.com/${u.replace(/^\/+/, "")}`;
+      showQRCodeWithECC(url, `QR for LinkedIn: ${u}`);
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderGitHub = () => {
+  clearAndStack(true);
+  const path = createField("User/Repo or URL", {
+    kind: "input",
+    type: "text",
+    placeholder: "emre/repo or https://github.com/emre",
+  });
+  inputContainer.appendChild(path);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (path.querySelector("input") as HTMLInputElement).value.trim();
+    if (v) {
+      const url = /^https?:\/\//i.test(v) ? v : `https://github.com/${v}`;
+      showQRCodeWithECC(url, `QR for GitHub: ${v}`);
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderDiscord = () => {
+  clearAndStack(true);
+  const invite = createField("Invite code or URL", {
+    kind: "input",
+    type: "text",
+    placeholder: "discord.gg/abc123 or https://...",
+  });
+  inputContainer.appendChild(invite);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (invite.querySelector("input") as HTMLInputElement).value.trim();
+    if (v) {
+      const url = /^https?:\/\//i.test(v)
+        ? v
+        : `https://discord.gg/${v.replace(/^\/+/, "")}`;
+      showQRCodeWithECC(url, `QR for Discord invite`);
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderSlack = () => {
+  clearAndStack(true);
+  const workspace = createField("Workspace invite URL", {
+    kind: "input",
+    type: "text",
+    placeholder: "https://yourworkspace.slack.com/...",
+  });
+  inputContainer.appendChild(workspace);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (
+      workspace.querySelector("input") as HTMLInputElement
+    ).value.trim();
+    if (v) showQRCodeWithECC(v, `QR for Slack workspace`);
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderGoogleReviews = () => {
+  clearAndStack(true);
+  const placeId = createField("Place ID or URL", {
+    kind: "input",
+    type: "text",
+    placeholder: "ChIJN1t_tDeuEmsRUsoyG83frY4 or maps URL",
+  });
+  inputContainer.appendChild(placeId);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (placeId.querySelector("input") as HTMLInputElement).value.trim();
+    if (v) {
+      const url = /^https?:\/\//i.test(v)
+        ? v
+        : `https://search.google.com/local/writereview?placeid=${encodeURIComponent(
+            v
+          )}`;
+      showQRCodeWithECC(url, `QR for Google Reviews`);
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderAppStore = () => {
+  clearAndStack(true);
+  const id = createField("App URL or ID", {
+    kind: "input",
+    type: "text",
+    placeholder: "https://apps.apple.com/... or id123456789",
+  });
+  inputContainer.appendChild(id);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (id.querySelector("input") as HTMLInputElement).value.trim();
+    if (v) {
+      const url = /^https?:\/\//i.test(v)
+        ? v
+        : `https://apps.apple.com/app/${v.replace(/^id/, "id")}`;
+      showQRCodeWithECC(url, `QR for App Store`);
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderPlayStore = () => {
+  clearAndStack(true);
+  const pkg = createField("App URL or Package", {
+    kind: "input",
+    type: "text",
+    placeholder: "https://play.google.com/store/apps/details?id=... or com.app",
+  });
+  inputContainer.appendChild(pkg);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (pkg.querySelector("input") as HTMLInputElement).value.trim();
+    const url = /^https?:\/\//i.test(v)
+      ? v
+      : `https://play.google.com/store/apps/details?id=${encodeURIComponent(
+          v
+        )}`;
+    showQRCodeWithECC(url, `QR for Play Store`);
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderAppleMaps = () => {
+  clearAndStack(true);
+  const q = createField("Query/Address or lat,lon", {
+    kind: "input",
+    type: "text",
+    placeholder: "1600 Amphitheatre Pkwy or 37.42,-122.08",
+  });
+  inputContainer.appendChild(q);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (q.querySelector("input") as HTMLInputElement).value.trim();
+    if (v) {
+      const url = `http://maps.apple.com/?q=${encodeURIComponent(v)}`;
+      showQRCodeWithECC(url, `QR for Apple Maps`);
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderWaze = () => {
+  clearAndStack(true);
+  const ll = createField("Lat,Lon", {
+    kind: "input",
+    type: "text",
+    placeholder: "37.42,-122.08",
+  });
+  inputContainer.appendChild(ll);
+  const confirmBtn = createConfirmButton();
+  confirmBtn.addEventListener("click", () => {
+    const v = (ll.querySelector("input") as HTMLInputElement).value.trim();
+    const m = v.match(/^\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)\s*$/);
+    if (m) {
+      const lat = parseFloat(m[1]);
+      const lon = parseFloat(m[2]);
+      if (isValidLat(lat) && isValidLon(lon)) {
+        const url = `https://waze.com/ul?ll=${lat}%2C${lon}&navigate=yes`;
+        showQRCodeWithECC(url, `QR for Waze directions`);
+      }
+    }
+  });
+  inputContainer.appendChild(confirmBtn);
+};
+
+const renderUTMBuilder = () => {
+  clearAndStack(true);
+  const base = createField("Base URL", {
+    kind: "input",
+    type: "text",
+    placeholder: "https://example.com",
+  });
+  const source = createField("utm_source", {
+    kind: "input",
+    type: "text",
+    placeholder: "newsletter",
+  });
+  const medium = createField("utm_medium", {
+    kind: "input",
+    type: "text",
+    placeholder: "email",
+  });
+  const campaign = createField("utm_campaign", {
+    kind: "input",
+    type: "text",
+    placeholder: "spring_sale",
+  });
+  const term = createField("utm_term (optional)", {
+    kind: "input",
+    type: "text",
+    placeholder: "shoes",
+  });
+  const content = createField("utm_content (optional)", {
+    kind: "input",
+    type: "text",
+    placeholder: "cta_banner",
+  });
+  inputContainer.appendChild(base);
+  inputContainer.appendChild(source);
+  inputContainer.appendChild(medium);
+  inputContainer.appendChild(campaign);
+  inputContainer.appendChild(term);
+  inputContainer.appendChild(content);
+  const confirmBtn = createConfirmButton("Build & Generate");
+  confirmBtn.addEventListener("click", () => {
+    const b = getInputEl(base).value.trim();
+    const s = getInputEl(source).value.trim();
+    const m = getInputEl(medium).value.trim();
+    const c = getInputEl(campaign).value.trim();
+    const t = getInputEl(term).value.trim();
+    const ct = getInputEl(content).value.trim();
+    clearFieldError(base);
+    if (!isValidURL(b)) {
+      showFieldError(base, "Enter a valid http(s) URL");
+      return;
+    }
+    const url = new URL(b);
+    url.searchParams.set("utm_source", s);
+    url.searchParams.set("utm_medium", m);
+    url.searchParams.set("utm_campaign", c);
+    if (t) url.searchParams.set("utm_term", t);
+    if (ct) url.searchParams.set("utm_content", ct);
+    const finalUrl = url.toString();
+    showQRCodeWithECC(finalUrl, `QR for UTM URL`);
+  });
+  inputContainer.appendChild(confirmBtn);
+};
 const renderMeCard = () => {
   clearAndStack(true);
   const name = createField("Name", {
@@ -1257,6 +1673,16 @@ imessageInput.addEventListener("click", renderIMessage);
 youtubeInput.addEventListener("click", renderYouTube);
 mecardInput.addEventListener("click", renderMeCard);
 directionsInput.addEventListener("click", renderDirections);
+appstoreInput.addEventListener("click", renderAppStore);
+playstoreInput.addEventListener("click", renderPlayStore);
+appleMapsInput.addEventListener("click", renderAppleMaps);
+wazeInput.addEventListener("click", renderWaze);
+githubInput.addEventListener("click", renderGitHub);
+linkedinInput.addEventListener("click", renderLinkedIn);
+discordInput.addEventListener("click", renderDiscord);
+slackInput.addEventListener("click", renderSlack);
+googleReviewsInput.addEventListener("click", renderGoogleReviews);
+utmBuilderInput.addEventListener("click", renderUTMBuilder);
 
 // Sidebar collapse behavior
 collapseBtn.addEventListener("click", () => {
@@ -1268,3 +1694,4 @@ collapseBtn.addEventListener("click", () => {
 // Default selection: URL
 urlInput.classList.add("active");
 renderURL();
+attachLiveColorHandlers();

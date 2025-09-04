@@ -34,6 +34,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
   background: radial-gradient(circle at top left, #ff006685, transparent 60%),
     radial-gradient(circle at top right, #ffcc008f, transparent 60%),
     radial-gradient(circle at bottom left, #00ccff79, transparent 60%),
@@ -89,14 +90,15 @@ body::before {
 }
 
 .ecc-btn {
-  height: 36px;
-  min-width: 36px;
-  border-radius: 100%;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 999px;
   border: 2px solid var(--border);
   background: var(--surface);
   cursor: pointer;
   font-weight: 700;
   position: relative;
+  transition: all 0.2s ease;
 }
 
 .ecc-btn.active {
@@ -108,6 +110,16 @@ body::before {
 .ecc-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.ecc-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.ecc-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--primary-focus-ring);
 }
 
 .content {
@@ -188,7 +200,9 @@ body::before {
 .preview {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  position: relative;
 }
 
 /* Input switcher buttons */
@@ -394,6 +408,74 @@ body::before {
 .qr-meta .label {
   font-weight: 600;
   color: var(--primary);
+}
+
+/* QR controls */
+.qr-toolbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2vw;
+}
+
+.qr-controls {
+  display: none;
+}
+
+.qr-toolbar label {
+  display: none;
+}
+
+.qr-toolbar input[type="color"],
+.qr-toolbar select {
+  height: 28px;
+  width: 28px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  padding: 0;
+}
+.qr-toolbar select {
+  width: auto;
+  height: 32px;
+  padding: 0 6px;
+}
+.color-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.color-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.qr-action-btn {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qr-action-btn:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-toolbar input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
 }
 
 /* Responsive adjustments */
