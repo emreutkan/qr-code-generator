@@ -638,15 +638,37 @@ input.text-input::placeholder {
 .generate-btn,
 .download-btn {
   height: 3.5rem;
-  width: 3.5rem; /* Make it circular/square */
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--duration-fast) var(--spring-snappy);
+}
+
+.generate-btn {
+  width: auto;
+  padding: 0 var(--space-2xl);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--accent);
+  color: var(--ink-on-accent);
+  box-shadow: 0 4px 16px var(--accent-ring);
+  margin-top: var(--space-md);
+}
+
+.download-btn {
+  width: 3.5rem; /* Make it circular/square */
+  padding: 0;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--ink);
+  border: 2px solid var(--border-strong);
+  box-shadow: var(--shadow-sm);
 }
 
 .generate-btn {
