@@ -12,16 +12,15 @@ appContainer.appendChild(header);
 const watermark = document.createElement("div");
 watermark.className = "watermark";
 watermark.innerHTML = `
-  <h1>Irfan Emre Utkan</h1>
-  <br />
-  <h2>QR Code generator</h2>
+  <h1>QR Code Generator</h1>
+  <h2>Irfan Emre Utkan</h2>
 `;
 header.appendChild(watermark);
 
 // ECC toolbar (top-right)
 const eccToolbar = document.createElement("div");
 eccToolbar.className = "ecc-toolbar";
-header.appendChild(eccToolbar);
+
 // Create main container
 const outerDiv = document.createElement("div");
 appContainer.appendChild(outerDiv);
@@ -35,6 +34,8 @@ outerDiv.appendChild(content);
 
 const sidebar = document.createElement("aside");
 sidebar.className = "sidebar";
+sidebar.setAttribute("role", "navigation");
+sidebar.setAttribute("aria-label", "QR type navigation");
 content.appendChild(sidebar);
 
 const sidebarHeader = document.createElement("div");
@@ -55,16 +56,22 @@ content.appendChild(centerCol);
 
 const previewCol = document.createElement("div");
 previewCol.className = "preview";
+previewCol.setAttribute("role", "region");
+previewCol.setAttribute("aria-label", "QR code preview");
 content.appendChild(previewCol);
 
 // Create input container (center column)
 const inputContainer = document.createElement("div");
 inputContainer.className = "link-input-container";
+inputContainer.setAttribute("role", "form");
+inputContainer.setAttribute("aria-label", "QR code input form");
 centerCol.appendChild(inputContainer);
 
 // Create input switcher
 const inputSwitcher = document.createElement("div");
 inputSwitcher.className = "input-switcher";
+inputSwitcher.setAttribute("role", "listbox");
+inputSwitcher.setAttribute("aria-label", "QR code type selector");
 sidebar.appendChild(inputSwitcher);
 
 // Create QR code display area (right column)
@@ -74,19 +81,16 @@ previewCol.appendChild(qrDisplay);
 
 const qrImage = document.createElement("img");
 qrImage.className = "qr-code";
+qrImage.alt = "Generated QR code";
+qrImage.addEventListener("load", () => qrImage.classList.remove("loading"));
+qrImage.addEventListener("error", () => qrImage.classList.remove("loading"));
 qrDisplay.appendChild(qrImage);
-
-const qrText = document.createElement("p");
-qrText.className = "qr-text";
-qrText.textContent =
-  "Select a type and enter your content to generate a QR code";
-qrDisplay.appendChild(qrText);
 
 // Add download button
 const downloadBtn = document.createElement("button");
 downloadBtn.className = "download-btn";
-downloadBtn.textContent = "Download QR Code";
-downloadBtn.style.display = "none";
+downloadBtn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
+downloadBtn.style.visibility = "hidden";
 downloadBtn.addEventListener("click", () => {
   if (qrImage.src && qrImage.src !== "") {
     const link = document.createElement("a");
@@ -97,65 +101,65 @@ downloadBtn.addEventListener("click", () => {
 });
 qrDisplay.appendChild(downloadBtn);
 
-// Meta info container
-const qrMeta = document.createElement("div");
-qrMeta.className = "qr-meta";
-qrDisplay.appendChild(qrMeta);
+// Minimal Color Changer below download button
+const colorRow = document.createElement('div');
+colorRow.className = 'custom-row minimal-color-row';
 
-// QR style toolbar on top of preview
-const qrToolbar = document.createElement("div");
-qrToolbar.className = "qr-toolbar";
-qrDisplay.parentElement?.insertBefore(qrToolbar, qrDisplay);
-
-// Color controls (FG/BG with labels) + actions (Invert/Reset)
-const fgGroup = document.createElement("div");
-fgGroup.className = "color-group";
-const fgLabel = document.createElement("span");
-fgLabel.className = "color-label";
-fgLabel.textContent = "FG";
-const fgColorInput = document.createElement("input");
-fgColorInput.type = "color";
-fgColorInput.value = "#000000";
-fgGroup.appendChild(fgLabel);
+const fgGroup = document.createElement('div');
+fgGroup.className = 'color-group';
+fgGroup.innerHTML = '<span class="color-label">Dots</span>';
+const fgColorInput = document.createElement('input');
+fgColorInput.type = 'color';
+fgColorInput.value = '#000000';
 fgGroup.appendChild(fgColorInput);
-qrToolbar.appendChild(fgGroup);
 
-const bgGroup = document.createElement("div");
-bgGroup.className = "color-group";
-const bgLabel = document.createElement("span");
-bgLabel.className = "color-label";
-bgLabel.textContent = "BG";
-const bgColorInput = document.createElement("input");
-bgColorInput.type = "color";
-bgColorInput.value = "#ffffff";
-bgGroup.appendChild(bgLabel);
+const bgGroup = document.createElement('div');
+bgGroup.className = 'color-group';
+bgGroup.innerHTML = '<span class="color-label">BG</span>';
+const bgColorInput = document.createElement('input');
+bgColorInput.type = 'color';
+bgColorInput.value = '#ffffff';
 bgGroup.appendChild(bgColorInput);
-qrToolbar.appendChild(bgGroup);
 
-const invertBtn = document.createElement("button");
-invertBtn.className = "qr-action-btn";
-invertBtn.type = "button";
-invertBtn.textContent = "Invert";
-qrToolbar.appendChild(invertBtn);
-
-const resetBtn = document.createElement("button");
-resetBtn.className = "qr-action-btn";
-resetBtn.type = "button";
-resetBtn.textContent = "Reset";
-qrToolbar.appendChild(resetBtn);
-
-invertBtn.addEventListener("click", () => {
+const invertBtn = document.createElement('button');
+invertBtn.className = 'qr-action-btn';
+invertBtn.textContent = 'Invert';
+invertBtn.addEventListener('click', () => {
   const tmp = fgColorInput.value;
   fgColorInput.value = bgColorInput.value;
   bgColorInput.value = tmp;
   if (lastPayloadText) showQRCodeWithECC(lastPayloadText, lastDescription);
 });
 
-resetBtn.addEventListener("click", () => {
-  fgColorInput.value = "#000000";
-  bgColorInput.value = "#ffffff";
-  if (lastPayloadText) showQRCodeWithECC(lastPayloadText, lastDescription);
+colorRow.appendChild(fgGroup);
+colorRow.appendChild(bgGroup);
+colorRow.appendChild(invertBtn);
+
+// ECC toolbar integrated below colorRow
+const eccWrapper = document.createElement("div");
+eccWrapper.className = "ecc-wrapper";
+const eccTitle = document.createElement("span");
+eccTitle.className = "color-label";
+eccTitle.textContent = "Quality";
+eccWrapper.appendChild(eccTitle);
+eccWrapper.appendChild(eccToolbar);
+colorRow.appendChild(eccWrapper);
+
+qrDisplay.appendChild(colorRow);
+
+// Meta info container (for the i button)
+const qrMeta = document.createElement("div");
+qrMeta.className = "qr-meta";
+qrDisplay.appendChild(qrMeta);
+
+// Live updates for color
+[fgColorInput, bgColorInput].forEach(el => {
+  el.addEventListener('input', () => {
+    if (lastPayloadText) showQRCodeWithECC(lastPayloadText, lastDescription);
+  });
 });
+
+
 
 // ECC toolbar buttons
 type ECCLevel = "L" | "M" | "Q" | "H";
@@ -190,8 +194,7 @@ for (const lvl of eccLevels) {
     if (lastPayloadText) {
       const url = buildQRUrl(lastPayloadText, currentECC);
       qrImage.src = url;
-      qrText.textContent = lastDescription;
-      downloadBtn.style.display = "inline-block";
+      downloadBtn.style.visibility = "visible";
     }
   });
   eccToolbar.appendChild(btn);
@@ -347,40 +350,49 @@ utmBuilderInput.className = "input-toggle";
 utmBuilderInput.innerHTML = `<span class=\"btn-ic\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M3 3h18v2H3V3zm0 6h18v2H3V9zm0 6h18v2H3v-2z\"/></svg></span><span>UTM Builder</span>`;
 inputSwitcher.appendChild(utmBuilderInput);
 
-// Reorder buttons alphabetically by label
-const orderedButtons: HTMLButtonElement[] = [
-  appstoreInput,
-  appleMapsInput,
-  directionsInput,
-  discordInput,
-  emailInput,
-  eventInput,
-  facetimeInput,
-  githubInput,
-  googleReviewsInput,
-  imessageInput,
-  linkedinInput,
-  mecardInput,
-  messengerInput,
-  phoneInput,
-  playstoreInput,
-  smsInput,
-  slackInput,
-  socialInput,
-  spotifyInput,
-  telegramInput,
-  textInput,
-  utmBuilderInput,
-  uberInput,
-  urlInput,
-  wazeInput,
-  whatsappInput,
-  wifiInput,
-  youtubeInput,
-  vcardInput,
-];
+// Categorize buttons for Accordion
+const categories = {
+  "Web & Basic": [urlInput, textInput, utmBuilderInput],
+  "Communication": [emailInput, phoneInput, smsInput, facetimeInput, imessageInput],
+  "Social & Chat": [whatsappInput, telegramInput, messengerInput, discordInput, slackInput, linkedinInput, socialInput],
+  "Location": [directionsInput, appleMapsInput, wazeInput, uberInput],
+  "Media & Stores": [youtubeInput, spotifyInput, appstoreInput, playstoreInput, googleReviewsInput, githubInput],
+  "Contact & Network": [vcardInput, mecardInput, eventInput, wifiInput]
+};
+
 inputSwitcher.innerHTML = "";
-for (const btn of orderedButtons) inputSwitcher.appendChild(btn);
+inputSwitcher.classList.add("accordion-mode");
+
+let totalDelay = 0;
+for (const [catName, btns] of Object.entries(categories)) {
+  const group = document.createElement("div");
+  group.className = "accordion-group";
+  
+  const header = document.createElement("button");
+  header.className = "accordion-header";
+  header.innerHTML = `<span>${catName}</span><span class="chevron">▾</span>`;
+  
+  const contentList = document.createElement("div");
+  contentList.className = "accordion-content";
+  
+  btns.forEach(btn => {
+    btn.style.setProperty("--i", String(totalDelay++));
+    contentList.appendChild(btn);
+  });
+  
+  header.addEventListener("click", () => {
+    Array.from(inputSwitcher.children).forEach(el => {
+      if (el !== group) el.classList.remove("open");
+    });
+    group.classList.toggle("open");
+  });
+  
+  group.appendChild(header);
+  group.appendChild(contentList);
+  inputSwitcher.appendChild(group);
+}
+// Open first group by default
+inputSwitcher.firstElementChild?.classList.add("open");
 
 // Add active state management for input toggles
 const inputToggles = document.querySelectorAll(".input-toggle");
@@ -404,6 +416,9 @@ const attachLiveColorHandlers = () => {
 // Helpers
 const clearAndStack = (stack: boolean) => {
   inputContainer.innerHTML = "";
+  inputContainer.classList.remove("entering");
+  void inputContainer.offsetWidth;
+  inputContainer.classList.add("entering");
   if (stack) {
     inputContainer.classList.add("stacked");
   } else {
@@ -485,13 +500,26 @@ const showQRCodeWithECC = async (text: string, description: string) => {
   lastPayloadText = text;
   lastDescription = description;
   const ecc = await chooseBestECC(text);
+  qrImage.classList.add("loading");
   const url = buildQRUrl(text, ecc);
   qrImage.src = url;
-  qrText.textContent = description;
-  downloadBtn.style.display = "inline-block";
+  downloadBtn.style.visibility = "visible";
   // Update meta info
   const sizeBytes = new TextEncoder().encode(text).length;
   qrMeta.innerHTML = "";
+  
+  // Floating info button container
+  const infoBtnContainer = document.createElement("div");
+  infoBtnContainer.className = "qr-info-btn-container";
+  
+  const infoBtn = document.createElement("button");
+  infoBtn.className = "qr-info-btn";
+  infoBtn.innerHTML = "ℹ";
+  infoBtn.title = "QR Details";
+  
+  const infoPopup = document.createElement("div");
+  infoPopup.className = "qr-info-popup";
+  
   const rows: Array<[string, string]> = [
     ["ECC", ecc],
     ["Payload", `${sizeBytes} bytes`],
@@ -510,11 +538,20 @@ const showQRCodeWithECC = async (text: string, description: string) => {
       vEl.classList.add("preview-url");
       vEl.title = v;
     }
-    qrMeta.appendChild(kEl);
-    qrMeta.appendChild(vEl);
+    infoPopup.appendChild(kEl);
+    infoPopup.appendChild(vEl);
   }
-  qrImage.style.background = "var(--surface)";
+  
+  infoBtnContainer.appendChild(infoBtn);
+  infoBtnContainer.appendChild(infoPopup);
+  qrMeta.appendChild(infoBtnContainer);
+  
+  // Let the API handle margin via qzone/margin params instead of CSS padding
+  qrImage.style.background = bgColorInput.value;
   qrImage.style.padding = "20px";
+  
+  // Show preview with a smooth transition
+  content.classList.add("has-preview");
 };
 
 // Utilities specific to certain types
@@ -559,7 +596,8 @@ const buildQRUrl = (text: string, ecc: ECCLevel): string => {
   const encodedText = encodeURIComponent(text);
   const fg = fgColorInput.value.replace("#", "");
   const bg = bgColorInput.value.replace("#", "");
-  return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=${ecc}&color=${fg}&bgcolor=${bg}&data=${encodedText}`;
+  
+  return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&ecc=${ecc}&color=${fg}&bgcolor=${bg}&qzone=0&margin=0&format=png&data=${encodedText}`;
 };
 const toIcsDateTimeLocal = (value: string): string => {
   // value expected like "YYYY-MM-DDTHH:MM" or "YYYY-MM-DDTHH:MM:SS"
